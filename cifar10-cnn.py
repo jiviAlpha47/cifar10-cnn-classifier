@@ -10,13 +10,13 @@ import torch.optim as optim
 
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
-# Data transforms
+
 data_transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
 
-# CIFAR-10 dataset
+
 train_dataset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=data_transform)
 test_dataset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=data_transform)
 
@@ -25,7 +25,7 @@ test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=32, shuffle=F
 
 class_names = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
 
-# Define CNN
+
 class CIFARClassifier(nn.Module):
     def __init__(self):
         super().__init__()
@@ -45,12 +45,12 @@ class CIFARClassifier(nn.Module):
         x = self.fc3(x)
         return x
 
-# Initialize model
+
 model = CIFARClassifier()
 loss_fn = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
-# Training loop with accuracy tracking
+
 for epoch in range(5):
     print(f"\nTraining Epoch {epoch + 1}...")
     running_loss = 0.0
@@ -77,10 +77,10 @@ for epoch in range(5):
     acc = 100 * correct / total
     print(f"Epoch {epoch + 1} Training Accuracy: {acc:.2f}%")
 
-# Save model
+
 torch.save(model.state_dict(), 'cifar_cnn.pth')
 
-# Load and evaluate model
+
 model.load_state_dict(torch.load('cifar_cnn.pth'))
 model.eval()
 
@@ -101,14 +101,14 @@ with torch.no_grad():
 accuracy = 100 * correct / total
 print(f"\nFinal Test Accuracy: {accuracy:.2f}%")
 
-# Confusion matrix
+
 cm = confusion_matrix(all_labels, all_preds)
 disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=class_names)
 disp.plot(xticks_rotation=45)
 plt.title("Confusion Matrix")
 plt.show()
 
-# Inference on custom images
+
 custom_transform = transforms.Compose([
     transforms.Resize((32, 32)),
     transforms.ToTensor(),
